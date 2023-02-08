@@ -1,10 +1,11 @@
+{{config(materialized='table')}}
 
 WITH Stg_customers as (
     SELECT * FROM {{ref('Stg_customers')}}
 ),
 Stg_orders as (
     SELECT * FROM {{ref('Stg_orders')}}
-)
+),
 Customer_Analysis as (
     SELECT
         customer_id,

@@ -1,20 +1,14 @@
 
-WITH orderdetails_fact as (
-    SELECT * FROM {{ref('Stg_orderdetails')}}
-),
-orders_dim as (
-    SELECT 
-        ordernumber as order_id,
-        customernumber as customer_id
-    FROM public.orders
-),
-orders_fact as (
-    SELECT
-        order_id,
-        customer_id,
-        SUM(order_amount) as order_amount
-    FROM orders_dim od
-    JOIN orderdetails_fact odf USING (order_id)
-    GROUP BY 1,2
-)
-SELECT * FROM orders_fact
+with
+    orderdetails_fact as (select * from {{ ref("Stg_orderdetails") }}),
+    orders_dim as (
+        select ordernumber as order_id, customernumber as customer_id from public.orders
+    ),
+    orders_fact as (
+        select order_id, customer_id, sum(order_amount) as order_amount
+        from orders_dim od
+        join orderdetails_fact odf using (order_id)
+        group by 1, 2
+    )
+select *
+from orders_fact
